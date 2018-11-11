@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketServer", "WebSocketServer\WebSocketServer.csproj", "{B5AE0FB3-5EDB-4E2C-92FA-DECC288ECFF6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5AE0FB3-5EDB-4E2C-92FA-DECC288ECFF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5AE0FB3-5EDB-4E2C-92FA-DECC288ECFF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5AE0FB3-5EDB-4E2C-92FA-DECC288ECFF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5AE0FB3-5EDB-4E2C-92FA-DECC288ECFF6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {22A02406-1825-4D02-8156-154DF80A0E6A}
+	EndGlobalSection
+EndGlobal
