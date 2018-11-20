@@ -26,5 +26,10 @@ namespace ContainerApp
         {
             this.InitializeComponent();
         }
+
+        private void StartServerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
