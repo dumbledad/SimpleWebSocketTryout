@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using WebSocketServerStandard;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,9 +23,11 @@ namespace ContainerApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private WebSocketServer server;
         public MainPage()
         {
             this.InitializeComponent();
+            server = new WebSocketServer()
         }
 
         private void StartServerButton_Click(object sender, RoutedEventArgs e)
