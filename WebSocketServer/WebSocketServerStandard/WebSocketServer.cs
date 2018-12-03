@@ -12,11 +12,6 @@ namespace WebSocketServerStandard
     // https://www.codeproject.com/Articles/57060/Web-Socket-Server
     public class WebSocketServer
     {
-        //#region private members
-        //private string webSocketOrigin;     // location for the protocol handshake
-        //private string webSocketLocation;   // location for the protocol handshake
-        //#endregion
-
         public event ClientConnectedEventHandler ClientConnected;
 
         /// <summary>
@@ -44,13 +39,10 @@ namespace WebSocketServerStandard
         /// </summary>
         public int Port { get; private set; }
 
-
-        public WebSocketServer(int port, string origin ="", string location = "")
+        public WebSocketServer(int port)
         {
             Port = port;
             Connections = new List<WebSocketConnection>();
-            //webSocketOrigin = origin;
-            //webSocketLocation = location;
         }
 
         /// <summary>
@@ -117,7 +109,6 @@ namespace WebSocketServerStandard
             LogLine("", ServerLogLevel.Subtle);
         }
 
-
         /// <summary>
         /// send a string to all the clients (you spammer!)
         /// </summary>
@@ -153,9 +144,11 @@ namespace WebSocketServerStandard
                 //read handshake from client (no need to actually read it, we know its there):
                 LogLine("Reading client handshake:", ServerLogLevel.Verbose);
                 string r = null;
+                var lines = new List<string>();
                 while (r != "")
                 {
                     r = reader.ReadLine();
+                    lines.Add(r);
                     LogLine(r, ServerLogLevel.Verbose);
                 }
 
@@ -163,8 +156,6 @@ namespace WebSocketServerStandard
                 writer.WriteLine("HTTP/1.1 101 Web Socket Protocol Handshake");
                 writer.WriteLine("Upgrade: WebSocket");
                 writer.WriteLine("Connection: Upgrade");
-                //writer.WriteLine("WebSocket-Origin: " + webSocketOrigin);
-                //writer.WriteLine("WebSocket-Location: " + webSocketLocation);
                 writer.WriteLine("");
             }
 
