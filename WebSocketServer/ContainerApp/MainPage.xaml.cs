@@ -22,7 +22,7 @@ namespace ContainerApp
         {
             if (server == null)
             {
-                server = new WebSocketServer(8181, "http://localhost:8080", "ws://localhost:8181/");
+                server = new WebSocketServer(23949, "http://localhost:8080", "ws://localhost:8181/");
                 server.Logger = new DebugTextWriter(); //Console.Out;
                 server.LogLevel = ServerLogLevel.Subtle;
                 server.ClientConnected += Server_ClientConnected;
@@ -31,9 +31,11 @@ namespace ContainerApp
             }
         }
 
-        private void Server_ClientConnected(WebSocketConnection sender, EventArgs e)
+        private async void Server_ClientConnected(WebSocketConnection sender, EventArgs e)
         {
-            CommunicationTextBlock.Text = "Connected";
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => {
+                CommunicationTextBlock.Text = "Connected";
+            });
             sender.Disconnected += Sender_Disconnected;
             sender.DataReceived += Sender_DataReceived;
         }

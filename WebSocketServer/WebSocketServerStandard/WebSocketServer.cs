@@ -12,10 +12,10 @@ namespace WebSocketServerStandard
     // https://www.codeproject.com/Articles/57060/Web-Socket-Server
     public class WebSocketServer
     {
-        #region private members
-        private string webSocketOrigin;     // location for the protocol handshake
-        private string webSocketLocation;   // location for the protocol handshake
-        #endregion
+        //#region private members
+        //private string webSocketOrigin;     // location for the protocol handshake
+        //private string webSocketLocation;   // location for the protocol handshake
+        //#endregion
 
         public event ClientConnectedEventHandler ClientConnected;
 
@@ -45,12 +45,12 @@ namespace WebSocketServerStandard
         public int Port { get; private set; }
 
 
-        public WebSocketServer(int port, string origin, string location)
+        public WebSocketServer(int port, string origin ="", string location = "")
         {
             Port = port;
             Connections = new List<WebSocketConnection>();
-            webSocketOrigin = origin;
-            webSocketLocation = location;
+            //webSocketOrigin = origin;
+            //webSocketLocation = location;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace WebSocketServerStandard
         {
             // create the main server socket, bind it to the local ip address and start listening for clients
             ListenerSocker = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-            IPEndPoint ipLocal = new IPEndPoint(IPAddress.Loopback, Port);
+            IPEndPoint ipLocal = new IPEndPoint(IPAddress.Any, Port);
             ListenerSocker.Bind(ipLocal);
             ListenerSocker.Listen(100);
             LogLine(DateTime.Now + "> server stated on " + ListenerSocker.LocalEndPoint, ServerLogLevel.Subtle);
@@ -163,8 +163,8 @@ namespace WebSocketServerStandard
                 writer.WriteLine("HTTP/1.1 101 Web Socket Protocol Handshake");
                 writer.WriteLine("Upgrade: WebSocket");
                 writer.WriteLine("Connection: Upgrade");
-                writer.WriteLine("WebSocket-Origin: " + webSocketOrigin);
-                writer.WriteLine("WebSocket-Location: " + webSocketLocation);
+                //writer.WriteLine("WebSocket-Origin: " + webSocketOrigin);
+                //writer.WriteLine("WebSocket-Location: " + webSocketLocation);
                 writer.WriteLine("");
             }
 
@@ -174,8 +174,8 @@ namespace WebSocketServerStandard
             LogLine("HTTP/1.1 101 Web Socket Protocol Handshake", ServerLogLevel.Verbose);
             LogLine("Upgrade: WebSocket", ServerLogLevel.Verbose);
             LogLine("Connection: Upgrade", ServerLogLevel.Verbose);
-            LogLine("WebSocket-Origin: " + webSocketOrigin, ServerLogLevel.Verbose);
-            LogLine("WebSocket-Location: " + webSocketLocation, ServerLogLevel.Verbose);
+            //LogLine("WebSocket-Origin: " + webSocketOrigin, ServerLogLevel.Verbose);
+            //LogLine("WebSocket-Location: " + webSocketLocation, ServerLogLevel.Verbose);
             LogLine("", ServerLogLevel.Verbose);
 
             LogLine("Started listening to client", ServerLogLevel.Verbose);
