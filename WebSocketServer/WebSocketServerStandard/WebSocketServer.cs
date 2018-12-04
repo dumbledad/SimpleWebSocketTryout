@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace WebSocketServerStandard
 {
@@ -12,6 +15,7 @@ namespace WebSocketServerStandard
     // https://www.codeproject.com/Articles/57060/Web-Socket-Server
     public class WebSocketServer
     {
+        private string WebSocketGUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
         public event ClientConnectedEventHandler ClientConnected;
 
         /// <summary>
@@ -152,10 +156,29 @@ namespace WebSocketServerStandard
                     LogLine(r, ServerLogLevel.Verbose);
                 }
 
+                var hashedClientKey = "";
+                if (lines.Count > 1)
+                {
+                    var splitLines = lines.Skip(1).Select(line => line.Split(':')).Where(splitLine => splitLine.Length == 2);
+                    var headers = splitLines.ToDictionary(splitLine => splitLine[0].Trim(), splitLine => splitLine[1].Trim());
+                    //TODO: Deal with compression, e.g. is the glient requests Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits; server_max_window_bits=15
+                    if (headers.ContainsKey("Sec-WebSocket-Key"))
+                    {
+                        using (var sha1 = new SHA1Managed())
+                        {
+                            hashedClientKey = Convert.ToBase64String(sha1.ComputeHash(Encoding.UTF8.GetBytes(headers["Sec-WebSocket-Key"] + WebSocketGUID)));
+                        }
+                    }
+                }
+
                 // send handshake to the client
                 writer.WriteLine("HTTP/1.1 101 Web Socket Protocol Handshake");
                 writer.WriteLine("Upgrade: WebSocket");
                 writer.WriteLine("Connection: Upgrade");
+                if (!string.IsNullOrEmpty(hashedClientKey))
+                {
+                    writer.WriteLine($"Sec-WebSocket-Accept: {hashedClientKey}");
+                }
                 writer.WriteLine("");
             }
 

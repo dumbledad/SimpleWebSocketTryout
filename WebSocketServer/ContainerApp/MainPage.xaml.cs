@@ -53,8 +53,6 @@ namespace ContainerApp
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => {
                 CommunicationTextBlock.Text = "Disconnected";
             });
-            server = null;
-            StartServerButton.IsEnabled = false;
         }
     }
 
