@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContainerApp", "ContainerAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSocketServerStandard", "WebSocketServerStandard\WebSocketServerStandard.csproj", "{AD6B5FDA-5849-408A-B5CB-7CE72ABF6FAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebSocketServer", "SimpleWebSocketServer\SimpleWebSocketServer.csproj", "{D51A3863-4CFE-4798-90A0-3CA678251F96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,26 @@ Global
 		{AD6B5FDA-5849-408A-B5CB-7CE72ABF6FAC}.Release|x64.Build.0 = Release|Any CPU
 		{AD6B5FDA-5849-408A-B5CB-7CE72ABF6FAC}.Release|x86.ActiveCfg = Release|Any CPU
 		{AD6B5FDA-5849-408A-B5CB-7CE72ABF6FAC}.Release|x86.Build.0 = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|ARM.Build.0 = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|x64.Build.0 = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Debug|x86.Build.0 = Debug|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|ARM.ActiveCfg = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|ARM.Build.0 = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|ARM64.Build.0 = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|x64.ActiveCfg = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|x64.Build.0 = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|x86.ActiveCfg = Release|Any CPU
+		{D51A3863-4CFE-4798-90A0-3CA678251F96}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
