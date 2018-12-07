@@ -156,9 +156,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WebSocketServerStandard\WebSocketServerStandard.csproj">
-      <Project>{ad6b5fda-5849-408a-b5cb-7ce72abf6fac}</Project>
-      <Name>WebSocketServerStandard</Name>
+    <ProjectReference Include="..\SimpleWebSocketServer\SimpleWebSocketServer.csproj">
+      <Project>{d51a3863-4cfe-4798-90a0-3ca678251f96}</Project>
+      <Name>SimpleWebSocketServer</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SimpleWebSocketServer;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using WebSocketServerStandard;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -23,24 +23,27 @@ namespace ContainerApp
             if (server == null)
             {
                 server = new WebSocketServer(23949);
-                server.Logger = new DebugTextWriter(); //Console.Out;
-                server.LogLevel = ServerLogLevel.Subtle;
-                server.ClientConnected += Server_ClientConnected;
+                server.ClientConnected += Server_ClientConnected1;
                 server.Start();
                 StartServerButton.IsEnabled = false;
             }
         }
 
-        private async void Server_ClientConnected(WebSocketConnection sender, EventArgs e)
+        private async void Server_ClientConnected1(WebSocketServer sender, ClientConnectedEventArgs e)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => {
                 CommunicationTextBlock.Text = "Connected";
             });
-            sender.Disconnected += Sender_Disconnected;
-            sender.DataReceived += Sender_DataReceived;
+            e.Connection.DataReceivedEvent += Connection_DataReceivedEvent;
+            e.Connection.WebSocketDisconnected += Connection_WebSocketDisconnected;
         }
 
-        private async void Sender_DataReceived(WebSocketConnection sender, WebSocketServerStandard.DataReceivedEventArgs e)
+        private void Connection_WebSocketDisconnected(WebSocketConnection sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void Connection_DataReceivedEvent(WebSocketConnection sender, SimpleWebSocketServer.DataReceivedEventArgs e)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => {
                 CommunicationTextBlock.Text = e.Data;
@@ -54,38 +57,5 @@ namespace ContainerApp
                 CommunicationTextBlock.Text = "Disconnected";
             });
         }
-    }
-
-    // https://stackoverflow.com/a/4234085/575530
-    public class DebugTextWriter : StreamWriter
-    {
-        public DebugTextWriter() : base(new DebugOutStream(), Encoding.Unicode, 1024)
-        {
-            this.AutoFlush = true;
-        }
-
-        public override Encoding Encoding => throw new NotImplementedException();
-
-        class DebugOutStream : Stream
-        {
-            public override void Write(byte[] buffer, int offset, int count)
-            {
-                Debug.Write(Encoding.Unicode.GetString(buffer, offset, count));
-            }
-
-            public override bool CanRead { get { return false; } }
-            public override bool CanSeek { get { return false; } }
-            public override bool CanWrite { get { return true; } }
-            public override void Flush() { Debug.Flush(); }
-            public override long Length { get { throw new InvalidOperationException(); } }
-            public override int Read(byte[] buffer, int offset, int count) { throw new InvalidOperationException(); }
-            public override long Seek(long offset, SeekOrigin origin) { throw new InvalidOperationException(); }
-            public override void SetLength(long value) { throw new InvalidOperationException(); }
-            public override long Position
-            {
-                get { throw new InvalidOperationException(); }
-                set { throw new InvalidOperationException(); }
-            }
-        };
     }
 }

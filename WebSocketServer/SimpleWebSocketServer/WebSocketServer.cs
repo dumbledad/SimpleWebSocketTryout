@@ -9,7 +9,7 @@ using System.Text;
 
 namespace SimpleWebSocketServer
 {
-    public delegate void ClientConnectedEventHandler(WebSocketServer sender, EventArgs e);
+    public delegate void ClientConnectedEventHandler(WebSocketServer sender, ClientConnectedEventArgs e);
 
     public class WebSocketServer
     {
@@ -60,7 +60,7 @@ namespace SimpleWebSocketServer
             var client = new WebSocketConnection(clientSocket, lines);
             clients.Add(client);
             SendOpeningHandShake(client);
-            ClientConnected?.Invoke(this, EventArgs.Empty);
+            ClientConnected?.Invoke(this, new ClientConnectedEventArgs { Connection = client });
             client.BeginReceive();
         }
 

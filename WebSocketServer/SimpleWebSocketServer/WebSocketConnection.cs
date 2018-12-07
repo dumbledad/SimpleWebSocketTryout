@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SimpleWebSocketServer
 {
-    public delegate void DataReceivedEventHandler(WebSocketConnection sender, EventArgs e);
+    public delegate void DataReceivedEventHandler(WebSocketConnection sender, DataReceivedEventArgs e);
     public delegate void WebSocketDisconnectedEventHandler(WebSocketConnection sender, EventArgs e);
 
     public class WebSocketConnection
@@ -133,10 +133,11 @@ namespace SimpleWebSocketServer
             var rsv1 = (accruedBytes[0] & 0b01000000) != 0x00;
             var rsv2 = (accruedBytes[0] & 0b00100000) != 0x00;
             var rsv3 = (accruedBytes[0] & 0b00010000) != 0x00;
-            var opcode = accruedBytes[0] & 0b00001111;
+            var opcode = (WebSocketFrameOpcodes)(accruedBytes[0] & 0b00001111);
             var mask = (accruedBytes[1] & 0b10000000) != 0x00; // "All frames sent from client to server have this bit set to 1."
             var payloadLength = (long)(accruedBytes[1] & 0b01111111);
             var offset = 2;
+            //TODO: are the bytes in the payload length reveresed? The spec says "Multibyte length quantities are expressed in network byte order". I think that means big-endian (https://stackoverflow.com/a/43818683/575530), so this should work
             if (payloadLength == 126)
             {
                 payloadLength = BitConverter.ToInt16(accruedBytes.ToArray(), offset);
@@ -147,24 +148,58 @@ namespace SimpleWebSocketServer
                 payloadLength = BitConverter.ToInt64(accruedBytes.ToArray(), offset);
                 offset = 10;
             }
-            var maskingKey = (uint)0;
+            var maskingKey = new List<byte>();
             if (mask)
             {
-                maskingKey = BitConverter.ToUInt32(accruedBytes.ToArray(), offset);
+                maskingKey.AddRange(accruedBytes.Skip(offset).Take(4));
                 offset = offset + 4;
             }
             //TODO: Since we have not allowed for the negotiation of extensions the payload is all application bytes
             if (accruedBytes.Count - offset >= payloadLength)
             {
-                var applicationData = accruedBytes.Skip(offset).Take((int)payloadLength); //HACK: What if this frame really is nonger than an int can cope with!
+                var applicationData = accruedBytes.Skip(offset).Take((int)payloadLength).ToList(); //HACK: What if this frame really is nonger than an int can cope with!
+                result = new WebSocketFrame
+                {
+                    Fin = fin,
+                    Rsv1 = rsv1,
+                    Rsv2 = rsv2,
+                    Rsv3 = rsv3,
+                    Opcode = opcode,
+                    Mask = mask,
+                    PayloadLength = payloadLength,
+                    MaskingKey = maskingKey,
+                    ApplicationData = applicationData
+                };
+                return true;
             }
-            //TODO: Save frame and clear out the bytes we've used up
-            blah
+            return false;
         }
 
         private void TryBundleAccruedFrames()
         {
-            throw new NotImplementedException();
+            if (accruedFrames.Count == 0) return;
+            if (accruedFrames[0].Fin)
+            {
+                DataReceivedEvent?.Invoke(this, new DataReceivedEventArgs { Opcode = accruedFrames[0].Opcode, UnmaskedApplicationData = accruedFrames[0].UnmaskedApplicationData });
+                accruedFrames.RemoveAt(0);
+                if (accruedFrames.Count != 0) TryBundleAccruedFrames();
+            }
+            else 
+            {
+                var indexOfFinFrame = accruedFrames.FindIndex(frame => frame.Fin);
+                if (indexOfFinFrame != -1)
+                {
+                    var opcode = accruedFrames[0].Opcode; //CHECK: are these all the same
+                    var unmaskedApplicationData = new List<byte>();
+                    for (var i = 0; i < indexOfFinFrame; i++)
+                    {
+                        unmaskedApplicationData.AddRange(accruedFrames[0].UnmaskedApplicationData);
+                    }
+                    for (var i = 0; i < indexOfFinFrame; i++) accruedFrames.RemoveAt(0);
+                    DataReceivedEvent?.Invoke(this, new DataReceivedEventArgs { Opcode = opcode, UnmaskedApplicationData = unmaskedApplicationData });
+                    if (accruedFrames.Count != 0) TryBundleAccruedFrames();
+                }
+            }
         }
 
         private void OnDisconnect()
@@ -174,54 +209,6 @@ namespace SimpleWebSocketServer
                 buffer = null;
             }
             WebSocketDisconnected?.Invoke(this, EventArgs.Empty);
-        }
-
-        List<byte[]> DecodeWebsocketFrame(Byte[] bytes)
-        {
-            // https://stackoverflow.com/a/25558586/575530
-            List<Byte[]> ret = new List<Byte[]>();
-            int offset = 0;
-            while (offset + 6 < bytes.Length)
-            {
-                // format: 0==ascii/binary 1=length-0x80, byte 2,3,4,5=key, 6+len=message, repeat with offset for next...
-                int len = bytes[offset + 1] - 0x80;
-
-                if (len <= 125)
-                {
-
-                    //String data = Encoding.UTF8.GetString(bytes);
-                    //Debug.Log("len=" + len + "bytes[" + bytes.Length + "]=" + ByteArrayToString(bytes) + " data[" + data.Length + "]=" + data);
-                    Debug.WriteLine("len=" + len + " offset=" + offset);
-                    Byte[] key = new Byte[] { bytes[offset + 2], bytes[offset + 3], bytes[offset + 4], bytes[offset + 5] };
-                    Byte[] decoded = new Byte[len];
-                    for (int i = 0; i < len; i++)
-                    {
-                        int realPos = offset + 6 + i;
-                        decoded[i] = (Byte)(bytes[realPos] ^ key[i % 4]);
-                    }
-                    offset += 6 + len;
-                    ret.Add(decoded);
-                }
-                else
-                {
-                    int a = bytes[offset + 2];
-                    int b = bytes[offset + 3];
-                    len = (a << 8) + b;
-                    //Debug.Log("Length of ws: " + len);
-
-                    Byte[] key = new Byte[] { bytes[offset + 4], bytes[offset + 5], bytes[offset + 6], bytes[offset + 7] };
-                    Byte[] decoded = new Byte[len];
-                    for (int i = 0; i < len; i++)
-                    {
-                        int realPos = offset + 8 + i;
-                        decoded[i] = (Byte)(bytes[realPos] ^ key[i % 4]);
-                    }
-
-                    offset += 8 + len;
-                    ret.Add(decoded);
-                }
-            }
-            return ret;
         }
     }
 }
