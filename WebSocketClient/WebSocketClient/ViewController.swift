@@ -19,8 +19,7 @@ class ViewController: UIViewController {
     }
     
     func setupSocket() {
-        //socket = WebSocket(url: URL(string: "ws://192.168.1.148:8080")!)
-        socket = WebSocket(url: URL(string: "ws://192.168.1.148:23949")!)
+        socket = WebSocket(url: URL(string: "ws://192.168.43.112:23949")!)
         socket?.enableCompression = false
         socket?.delegate = self
         socket?.connect()
