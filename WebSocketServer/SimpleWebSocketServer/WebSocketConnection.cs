@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -54,17 +53,17 @@ namespace SimpleWebSocketServer
         {
             Socket = socket;
 
-            var requestedExtensionsLine = clientHandshakeLines.FirstOrDefault(line => line.StartsWith(_ExtensionsPrefix));
-            RequestedExtensions = requestedExtensionsLine.Substring(_ExtensionsPrefix.Length).Split(';').Select(fragment => fragment.Trim()).ToList();
+            var requestedExtensionsLine = clientHandshakeLines?.FirstOrDefault(line => line.StartsWith(_ExtensionsPrefix));
+            RequestedExtensions = requestedExtensionsLine?.Substring(_ExtensionsPrefix.Length).Split(';').Select(fragment => fragment.Trim()).ToList();
 
-            var requestedProtocolsLine = clientHandshakeLines.FirstOrDefault(line => line.StartsWith(_ProtocolPrefix));
-            RequestedExtensions = requestedProtocolsLine.Substring(_ProtocolPrefix.Length).Split(';').Select(fragment => fragment.Trim()).ToList();
+            var requestedProtocolsLine = clientHandshakeLines?.FirstOrDefault(line => line.StartsWith(_ProtocolPrefix));
+            RequestedExtensions = requestedProtocolsLine?.Substring(_ProtocolPrefix.Length).Split(';').Select(fragment => fragment.Trim()).ToList();
 
-            var versionLine = clientHandshakeLines.FirstOrDefault(line => line.StartsWith(_VersionPrefix));
-            Version = versionLine.Substring(_VersionPrefix.Length).Trim();
+            var versionLine = clientHandshakeLines?.FirstOrDefault(line => line.StartsWith(_VersionPrefix));
+            Version = versionLine?.Substring(_VersionPrefix.Length).Trim();
 
-            var keyLine = clientHandshakeLines.FirstOrDefault(line => line.StartsWith(_KeyPrefix));
-            Key = versionLine.Substring(_KeyPrefix.Length).Trim();
+            var keyLine = clientHandshakeLines?.FirstOrDefault(line => line.StartsWith(_KeyPrefix));
+            Key = keyLine?.Substring(_KeyPrefix.Length).Trim();
         }
 
         public void BeginReceive()

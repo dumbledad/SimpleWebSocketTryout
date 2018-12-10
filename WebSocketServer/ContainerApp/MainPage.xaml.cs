@@ -38,20 +38,17 @@ namespace ContainerApp
             e.Connection.WebSocketDisconnected += Connection_WebSocketDisconnected;
         }
 
-        private void Connection_WebSocketDisconnected(WebSocketConnection sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private async void Connection_DataReceivedEvent(WebSocketConnection sender, SimpleWebSocketServer.DataReceivedEventArgs e)
         {
+            var unmaskedApplicationData = e.UnmaskedApplicationData;
+            var unmaskedApplicationDataString = Encoding.UTF8.GetString(unmaskedApplicationData.ToArray(), 0, unmaskedApplicationData.Count);
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => {
-                CommunicationTextBlock.Text = e.Data;
+                CommunicationTextBlock.Text = unmaskedApplicationDataString;
             });
-            Debug.WriteLine($"From client: {e.Data}");
+            Debug.WriteLine($"From client: {unmaskedApplicationDataString}");
         }
 
-        private async void Sender_Disconnected(WebSocketConnection sender, EventArgs e)
+        private async void Connection_WebSocketDisconnected(WebSocketConnection sender, EventArgs e)
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => {
                 CommunicationTextBlock.Text = "Disconnected";
